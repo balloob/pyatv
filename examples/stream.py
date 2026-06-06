@@ -24,8 +24,9 @@ class PushUpdatePrinter(PushListener):
 
 async def stream_with_push_updates(address: str, filename: str):
     """Find a device and print what is playing."""
+    loop = asyncio.get_running_loop()
     print("* Discovering device on network...")
-    atvs = await pyatv.scan(hosts=[address], timeout=5)
+    atvs = await pyatv.scan(loop, hosts=[address], timeout=5)
 
     if not atvs:
         print("* Device found", file=sys.stderr)
@@ -34,7 +35,7 @@ async def stream_with_push_updates(address: str, filename: str):
     conf = atvs[0]
 
     print("* Connecting to", conf.address)
-    atv = await pyatv.connect(conf)
+    atv = await pyatv.connect(conf, loop)
 
     listener = PushUpdatePrinter()
     atv.push_updater.listener = listener

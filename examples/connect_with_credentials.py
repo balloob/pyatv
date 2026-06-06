@@ -32,8 +32,9 @@ DEVICES = [
 
 async def print_what_is_playing(device):
     """Find a device and print what is playing."""
+    loop = asyncio.get_running_loop()
     print(f"Discovering {device['name']} on network...")
-    confs = await pyatv.scan(identifier=device["identifiers"])
+    confs = await pyatv.scan(loop, identifier=device["identifiers"])
 
     if not confs:
         print("Device could not be found", file=sys.stderr)
@@ -44,7 +45,7 @@ async def print_what_is_playing(device):
         conf.set_credentials(protocol, credentials)
 
     print(f"Connecting to {conf.address}")
-    atv = await pyatv.connect(conf)
+    atv = await pyatv.connect(conf, loop)
 
     try:
         playing = await atv.metadata.playing()

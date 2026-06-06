@@ -12,15 +12,16 @@ from pyatv.const import Protocol
 
 async def play_url(device_id: str, airplay_credentials: str, url: str):
     """Connect to an Apple TV and stream file via AirPlay."""
+    loop = asyncio.get_running_loop()
     print("* Discovering device on network...")
-    atvs = await pyatv.scan(identifier=device_id)
+    atvs = await pyatv.scan(loop, identifier=device_id)
     if not atvs:
         print("* Device found", file=sys.stderr)
         return
 
     conf = atvs[0]
     conf.set_credentials(Protocol.AirPlay, airplay_credentials)
-    atv = await pyatv.connect(conf)
+    atv = await pyatv.connect(conf, loop)
 
     try:
         print(f"* Streaming {url} to {conf.address}")

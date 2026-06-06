@@ -20,7 +20,7 @@ async def print_what_is_playing():
     )
 
     print(f"Connecting to {config.address}")
-    atv = await connect(config)
+    atv = await connect(config, asyncio.get_running_loop())
 
     try:
         print(await atv.metadata.playing())
